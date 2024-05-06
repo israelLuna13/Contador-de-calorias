@@ -1,12 +1,14 @@
 import { categories } from "../data/categories";
 import {v4 as uuidv4} from 'uuid'
-import { useState, ChangeEvent, FormEvent, Dispatch } from "react";
+import { useState, ChangeEvent, FormEvent, Dispatch,useEffect } from "react";
 import { Activity } from "../types";
-import { ActivityActions } from "../reducers/activityReducer";
+import { ActivityActions,ActivityState } from "../reducers/activityReducer";
 //tipo de dato del dispach , el pasar entre componentes el dispatch pierde su tipo de dato
 type FromProps={
-  dispatch : Dispatch<ActivityActions>
+  dispatch : Dispatch<ActivityActions>,
+  state: ActivityState
 }
+
 //estado inicial del state
 const initialState :Activity={
   id:uuidv4(),
@@ -14,11 +16,19 @@ const initialState :Activity={
     name: '',
     calories: 0,
 }
-function Form({dispatch}:FromProps) {
-
-
+function Form({dispatch,state}:FromProps) {
 
   const [activity, setActivity] = useState <Activity>(initialState);
+
+  //se estara ejecutando todo el tiempo
+  //tomamos el id de la actividad que se esta seleccionando para editar 
+  useEffect(() => {
+if(state.activeId){
+  //tomamos el objeto que se esta seleccionando 
+  const selectActivity = state.activities.filter(stateActivity => stateActivity.id === state.activeId)[0]
+  setActivity(selectActivity)
+}
+  },[state.activeId])
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => { 
 

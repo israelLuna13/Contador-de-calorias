@@ -1,6 +1,7 @@
 import Form from "./components/Form"
 import { useReducer } from "react"
 import { ActivityActions, activityReducer,InitialState } from "./reducers/activityReducer"
+import ActivityList from "./components/ActivityList"
 
 function App() {
 
@@ -23,12 +24,20 @@ function App() {
 
         <Form
               dispatch = {dispatch}
+              state={state}
         />
 
 
       </div>
 
 
+    </section>
+
+    <section className="p-10 mx-auto max-w-4xl">
+      <ActivityList
+      activities = {state.activities}
+      dispatch = {dispatch}
+      />
     </section>
 </>
 
