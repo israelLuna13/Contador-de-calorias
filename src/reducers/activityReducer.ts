@@ -5,22 +5,30 @@ import { Activity } from "../types"
 export type ActivityActions = 
     {type:'save-activity',payload:{newActivity:Activity}} |
     //elemento que se selecciono para editarlo
-    {type:'set-activeId',payload:{id:Activity['id']}}
+    {type:'set-activeId',payload:{id:Activity['id']}} |
+    
+    {type:'delete-activity',payload:{id:Activity['id']}} |
 
-
+    {type:'restart-app'} 
 
 export type ActivityState={
     activities :Activity[],
     activeId:Activity['id']
 }
 
-//inicializamos el estado, sera un estado de actividades, tipo de ejercicio, calorias etc
-export const InitialState:ActivityState = {
-activities:[],
-activeId:''
-
-
+//obtener lo que este en el local storage 
+const localStorageActivities = ():Activity[] =>{
+    const activities = localStorage.getItem('activities')
+    return activities ? JSON.parse(activities):[]
 }
+
+//inicializamos el estado, sera un estado de actividades, tipo de ejercicio, calorias etc
+//cuando se recargue la pagina el activiti tomara lo que tenga el local storage
+export const InitialState:ActivityState = {
+activities:localStorageActivities(),
+activeId:''
+}
+
 //esto sera mandado llamar por el dispatch
 export const activityReducer = (
 
@@ -48,7 +56,6 @@ export const activityReducer = (
             ...state,activities:updateActivities,
             activeId:''
             //...state,activities:[...state.activities,action.payload.newActivity]
-              
         }
     }
 
@@ -59,5 +66,19 @@ export const activityReducer = (
         }
     }
 
+    //eliminar
+    if(action.type === 'delete-activity'){
+        return{
+            ...state,
+            activities:state.activities.filter(activity => activity.id != action.payload.id)
+        }
+    }
+
+    if(action.type === 'restart-app'){
+        return{
+            activities:[],
+            activeId:''
+        }
+    }
     return state
 }
