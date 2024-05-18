@@ -1,26 +1,10 @@
-import { Activity } from "../types";
 import { PencilSquareIcon, XCircleIcon } from "@heroicons/react/16/solid";
-import { categories } from "../data/categories";
-import { useMemo, Dispatch } from "react";
-import { ActivityActions } from "../reducers/activityReducer";
+import { useActivity } from "../hooks/useActivity";
 
-type ActivityListProps = {
-  activities: Activity[];
-  dispatch: Dispatch<ActivityActions>;
-};
+function ActivityList() {
+  const { state, dispatch, isEmptyActivities, categoryName } = useActivity();
+  const { activities } = state;
 
-function ActivityList({ activities, dispatch }: ActivityListProps) {
-  const categoryName = useMemo(
-    () => (category: Activity["category"]) =>
-      categories.map((cat) => (cat.id === category ? cat.name : "")),
-
-    [activities]
-  );
-
-  const isEmptyActivities = useMemo(
-    () => activities.length === 0,
-    [activities]
-  );
   return (
     <>
       <h2 className="text-4xl font-bold text-slate-600 text-center">
